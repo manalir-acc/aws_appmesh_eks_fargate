@@ -58,25 +58,24 @@ jobs:
             echo "create a folder structure and file"    
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
-            cat /home/runner/.kube/config
       - name: EKS Cluster Config Update
         run: |
            aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
            cat /home/runner/.kube/config
-      - name: Terraform Plan
-        if: always()
-        id: plan
-        run: |
-          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
-      - name: Terraform apply
-        if: always()
-       # if: github.ref == 'refs/heads/master'
-        id: apply
-        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
-#      - name: Terraform Destroy
-#        #if: github.ref == 'refs/heads/master'
-#        id: destroy
-#        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+#      - name: Terraform Plan
+#        if: always()
+#        id: plan
+#        run: |
+#          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+#      - name: Terraform apply
+#        if: always()
+#       # if: github.ref == 'refs/heads/master'
+#        id: apply
+#        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+      - name: Terraform Destroy
+        #if: github.ref == 'refs/heads/master'
+        id: destroy
+        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 #     - name: adding config file to s3
 #       run: |
 #         cd /home/runner/.kube
