@@ -26,6 +26,7 @@ jobs:
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          AWS_TOKEN: ${{ secrets.AWS_TOKEN }}
          AWS_DEFAULT_REGION: eu-west-2
+         AWS_EKS_CLUSTER_NAME: sm-eks-clstr-testing
     steps:
       - uses: actions/checkout@v2
       - name: Install kubectl
@@ -56,8 +57,11 @@ jobs:
            terraform init
       - name: EKS Cluster Config Update
         run: |
-           aws eks update-kubeconfig --region eu-west-2 --name ${{ secrets.EKS_CLUSTER_NAME }}     
-           cat /home/runner/.kube/config
+            echo "create a folder structure and file"    
+            touch /home/runner/.kube/config
+            chmod -R 777 /home/runner/.kube/
+            aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}     
+            cat /home/runner/.kube/config
       - name: Terraform Plan
         if: always()
         id: plan
