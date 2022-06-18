@@ -68,7 +68,7 @@ jobs:
         run: |
           terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
       - name: Terraform apply
-        #if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         id: apply
         run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
 #      - name: Terraform Destroy
