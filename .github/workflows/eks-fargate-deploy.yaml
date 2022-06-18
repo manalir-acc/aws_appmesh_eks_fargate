@@ -55,6 +55,9 @@ jobs:
             curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.22.0/bin/linux/amd64/kubectl
             chmod +x ./kubectl
             mkdir /home/runner/.kube/
+            echo "create a folder structure and file"    
+            touch /home/runner/.kube/config
+            chmod -R 777 /home/runner/.kube/
       - name: EKS Cluster Config Update
         run: |
            aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
