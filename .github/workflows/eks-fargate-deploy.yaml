@@ -41,7 +41,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_TOKEN }}
-          aws-region: $AWS_DEFAULT_REGION
+          aws-region: eu-west-2
     #  - name: run config file
     #    run: |
     #      pwd
