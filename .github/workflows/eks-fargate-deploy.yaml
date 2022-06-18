@@ -57,11 +57,13 @@ jobs:
            terraform init
       - name: EKS Cluster Config Update
         run: |
-            echo "create a folder structure and file"    
+            echo "create a folder structure and file" 
+            mkdir /home/runner/.kube/
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
-            aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}     
+            aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}   
             cat /home/runner/.kube/config
+            kubectl get clusterroles
       - name: Terraform Plan
         if: always()
         id: plan
