@@ -50,7 +50,7 @@ jobs:
            terraform init
       - name: Config Update
         run: |
-           aws eks update-kubeconfig --region eu-west-1 --name sm-eks-clstr-testing
+           aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
            cat /home/runner/.kube/config
       - name: Terraform Plan
         id: plan
