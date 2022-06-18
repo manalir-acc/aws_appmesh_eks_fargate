@@ -1,0 +1,86 @@
+name: "Terraform Deployment"
+on:
+  # Manual trigger
+  workflow_dispatch:
+  push:
+    paths:
+      - '*/**'
+  pull_request:
+    branches: [ master ]
+defaults:
+  run:
+    shell: bash
+    working-directory: ./
+jobs:
+  terraform-infra:
+    name:   ${{matrix.runner}} - ${{ matrix.environment }}
+    runs-on: [ '${{ matrix.runner }}']
+    strategy:
+      max-parallel: 1
+      matrix:
+         include:
+           - environment: test
+             runner: ubuntu-latest
+    env:
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         AWS_TOKEN: ${{ secrets.AWS_TOKEN }}
+         AWS_DEFAULT_REGION: eu-west-2
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_TOKEN }}
+          aws-region: eu-west-2
+    #  - name: run config file
+    #    run: |
+    #      pwd
+    #      chmod -R 755 config-file.sh
+    #      ./config-file.sh
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+      - name: Terraform Init
+        id: init
+        run: |
+           rm -rf .terraform
+           terraform init
+      - name: Config Update
+        run: |
+           aws eks update-kubeconfig --region eu-west-1 --name sm-eks-clstr-testing
+           cat /home/runner/.kube/config
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+      - name: Terraform apply
+        #if: github.ref == 'refs/heads/master'
+        id: apply
+        run: terraform apply -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+#      - name: Terraform Destroy
+#        #if: github.ref == 'refs/heads/master'
+#        id: destroy
+#        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+#     - name: adding config file to s3
+#       run: |
+#         cd /home/runner/.kube
+#         chmod -R 755 /home/runner/.kube
+#         aws s3 cp --recursive /home/runner/.kube/ s3://landg-terraform-state/eks/configfile/ --region "eu-west-2"
+#         ls -lart
+#         cat config-custom.cfg
+  comment:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
