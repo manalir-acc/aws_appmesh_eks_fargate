@@ -61,7 +61,8 @@ jobs:
             mkdir /home/runner/.kube/
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
-            if ${AWS_EKS_CLUSTER_NAME}==$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
+            if ${AWS_EKS_CLUSTER_NAME}==$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text); 
+            then
              aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME} 
             else
               echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} not present in ${AWS_DEFAULT_REGION}"
