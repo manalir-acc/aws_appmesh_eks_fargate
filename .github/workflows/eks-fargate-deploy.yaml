@@ -60,7 +60,7 @@ jobs:
       - name: Terraform apply
         #if: github.ref == 'refs/heads/master'
         id: apply
-        run: terraform apply -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+        run: terraform apply -auto-approve -input=false -var-file=test-env.tfvars    # ${{ matrix.environment }}/terraform.tfvars
 #      - name: Terraform Destroy
 #        #if: github.ref == 'refs/heads/master'
 #        id: destroy
