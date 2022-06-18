@@ -13,7 +13,7 @@ on:
 #    working-directory: ./
 jobs:
   terraform-infra:
-    name:   ${{matrix.runner}} - ${{ matrix.environment }}
+    name:   ${{matrix.runner}} - ${{matrix.environment }}
     runs-on: [ '${{ matrix.runner }}']
     strategy:
       max-parallel: 1
@@ -60,7 +60,7 @@ jobs:
       - name: Terraform apply
         #if: github.ref == 'refs/heads/master'
         id: apply
-        run: terraform apply -auto-approve -input=false -var-file=test-env.tfvars    # ${{ matrix.environment }}/terraform.tfvars
+        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
 #      - name: Terraform Destroy
 #        #if: github.ref == 'refs/heads/master'
 #        id: destroy
