@@ -15,7 +15,7 @@ module "vpc" {
     cidr_block_nat_gw                   =  var.cidr_block_nat_gw
     cidr_block_internet_gw              =  var.cidr_block_internet_gw
 }
-
+                                       #
 
 #
 #module "eks" {
@@ -44,8 +44,8 @@ module "vpc" {
 #  depends_on = [module.eks]
 #
 #}
+
 #
-##
 ##
 #module "aws_alb_controller" {
 #  source  = "./modules/aws-lb-controller"
