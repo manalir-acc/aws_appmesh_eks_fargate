@@ -48,11 +48,12 @@ jobs:
         run: |
            rm -rf .terraform
            terraform init
-      - name: Config Update
+      - name: EKS Cluster Config Update
         run: |
            aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
            cat /home/runner/.kube/config
       - name: Terraform Plan
+        if: always()
         id: plan
         run: |
           terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
