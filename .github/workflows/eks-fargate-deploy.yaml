@@ -41,7 +41,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_TOKEN }}
-          aws-region: eu-west-2
+          aws-region: ${AWS_DEFAULT_REGION}
     #  - name: run config file
     #    run: |
     #      pwd
@@ -61,9 +61,10 @@ jobs:
             mkdir /home/runner/.kube/
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
-            aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}   
+            if ${AWS_EKS_CLUSTER_NAME}==$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
+             aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME} 
+            fi
             cat /home/runner/.kube/config
-            kubectl get clusterroles
       - name: Terraform Plan
         if: always()
         id: plan
