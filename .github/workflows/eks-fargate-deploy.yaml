@@ -56,7 +56,7 @@ jobs:
            terraform init
       - name: EKS Cluster Config Update
         run: |
-           aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
+           aws eks update-kubeconfig --region eu-west-2 --name ${{ secrets.EKS_CLUSTER_NAME }}     
            cat /home/runner/.kube/config
       - name: Terraform Plan
         if: always()
