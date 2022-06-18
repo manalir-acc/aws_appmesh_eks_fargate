@@ -1,7 +1,7 @@
 # EKS Cluster and Network Infrastructure
 environment                  =  "testing"
 user_profile                 =  "AWS_741032333307_User"
-user_os                      =  "windows"
+user_os                      =  "linux"
 cluster_name                 =  "sm-eks-clstr"
 cluster_version              =  "1.22"
 cluster_type                 =  "eks"
