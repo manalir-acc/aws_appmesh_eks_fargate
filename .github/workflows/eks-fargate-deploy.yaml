@@ -28,6 +28,12 @@ jobs:
          AWS_DEFAULT_REGION: eu-west-2
     steps:
       - uses: actions/checkout@v2
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'v1.22.10'
+        id: install
+      - uses: actions/checkout@v2
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -48,34 +54,24 @@ jobs:
         run: |
            rm -rf .terraform
            terraform init
-      - name: Install Kubectl CLI
-        run: |
-            echo install kubectl
-            cd /home/runner/
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.22.0/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
-            mkdir /home/runner/.kube/
-            echo "create a folder structure and file"    
-            touch /home/runner/.kube/config
-            chmod -R 777 /home/runner/.kube/
       - name: EKS Cluster Config Update
         run: |
            aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
            cat /home/runner/.kube/config
-#      - name: Terraform Plan
-#        if: always()
-#        id: plan
-#        run: |
-#          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
-#      - name: Terraform apply
-#        if: always()
-#       # if: github.ref == 'refs/heads/master'
-#        id: apply
-#        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
-      - name: Terraform Destroy
-        #if: github.ref == 'refs/heads/master'
-        id: destroy
-        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+      - name: Terraform Plan
+        if: always()
+        id: plan
+        run: |
+          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+      - name: Terraform apply
+        if: always()
+       # if: github.ref == 'refs/heads/master'
+        id: apply
+        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+#      - name: Terraform Destroy
+#        #if: github.ref == 'refs/heads/master'
+#        id: destroy
+#        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
 #     - name: adding config file to s3
 #       run: |
 #         cd /home/runner/.kube
