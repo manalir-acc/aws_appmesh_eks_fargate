@@ -48,6 +48,10 @@ jobs:
         run: |
            rm -rf .terraform
            terraform init
+      - name: Creating Dummy Kube Config File
+        run: |
+            touch /home/runner/.kube/config
+            chmod -R 755 /home/runner/.kube/config
       - name: EKS Cluster Config Update
         run: |
            aws eks update-kubeconfig --region eu-west-2 --name sm-eks-clstr-testing
