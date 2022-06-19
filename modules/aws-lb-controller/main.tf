@@ -57,7 +57,6 @@ resource "kubernetes_service_account" "this" {
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
-  depends_on = [var.alb_controller_depends_on]
 }
 
 resource "kubernetes_cluster_role" "this" {
@@ -115,7 +114,6 @@ resource "kubernetes_cluster_role" "this" {
       "watch",
     ]
   }
-  depends_on = [var.alb_controller_depends_on]
 }
 
 resource "kubernetes_cluster_role_binding" "this" {
@@ -142,6 +140,54 @@ resource "kubernetes_cluster_role_binding" "this" {
   }
 }
 
+
+
+
+resource "helm_release" "alb_controller" {
+
+  name       = "aws-load-balancer-controller"
+  repository = local.alb_controller_helm_repo
+  chart      = local.alb_controller_chart_name
+  version    = local.alb_controller_chart_version
+  namespace  = var.k8s_namespace
+  atomic     = true
+  timeout    = 900
+  cleanup_on_fail = true
+
+  set {
+      name = "clusterName"
+      value = var.k8s_cluster_name
+      type = "string"
+  }
+  set {
+      name = "serviceAccount.create"
+      value = "false"
+      type = "bool"
+  }
+  set {
+      name = "serviceAccount.name"
+      value = kubernetes_service_account.this.metadata[0].name
+      type = "string"
+  }
+  set {
+      name = "region"
+      value = local.aws_region_name
+      type = "string"
+  }
+  set {
+      name = "vpcId"
+      value = local.aws_vpc_id
+      type = "string"
+  }
+  set {
+      name =  "hostNetwork"
+      value = var.enable_host_networking
+      type = "bool"
+  }
+}
+
+
+/*
 resource "helm_release" "alb_controller" {
 
   name       = "aws-load-balancer-controller"

@@ -1,7 +1,7 @@
 variable "k8s_cluster_type" {
   description = "Can be set to `vanilla` or `eks`. If set to `eks`, the Kubernetes cluster will be assumed to be run on EKS which will make sure that the AWS IAM Service integration works as expected."
   type        = string
-  default     = "vanilla"
+  default     = "eks"
 }
 
 variable "k8s_cluster_name" {
@@ -82,13 +82,16 @@ variable "enable_host_networking" {
   default     = false
 }
 
+/*
 variable "chart_env_overrides" {
   description = "env values passed to the load balancer controller helm chart."
   type        = map(any)
   default     = {}
 }
 
+
 variable "alb_controller_depends_on" {
   description = "Resources that the module should wait for before starting the controller. For example if there is no node_group, 'aws_eks_fargate_profile.default'"
   default = null
 }
+*/

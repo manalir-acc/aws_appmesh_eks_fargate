@@ -121,29 +121,35 @@ resource "helm_release" "alb_controller" {
   timeout    = 900
   cleanup_on_fail = true
 
-  dynamic "set" {
-
-    for_each = {
-      "clusterName"           = var.k8s_cluster_name
-      "serviceAccount.create" = "false"
-      "serviceAccount.name"   =   kubernetes_service_account.this.metadata[0].name
-      "region"                = local.aws_region_name
-      "vpcId"                 = local.aws_vpc_id
-      "hostNetwork"           = var.enable_host_networking
-    }
-    content {
-      name  = set.key
-      value = set.value
-    }
+  set {
+      name = "clusterName"
+      value = var.k8s_cluster_name
+      type = "string"
   }
-
-  dynamic "set" {
-    for_each = var.chart_env_overrides
-    content {
-      name  = set.key
-      value = set.value
-    }
+  set {
+      name = "serviceAccount.create"
+      value = "false"
+      type = "bool"
   }
-
+  set {
+      name = "serviceAccount.name"
+      value = kubernetes_service_account.this.metadata[0].name
+      type = "string"
+  }
+  set {
+      name = "region"
+      value = local.aws_region_name
+      type = "string"
+  }
+  set {
+      name = "vpcId"
+      value = local.aws_vpc_id
+      type = "string"
+  }
+  set {
+      name =  "hostNetwork"
+      value = var.enable_host_networking
+      type = "bool"
+  }
 }
 
