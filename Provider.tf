@@ -6,32 +6,18 @@
 provider "aws" {
   region     = var.region_name
 }
+
+
+
 terraform {
   backend "s3" {
-    bucket = "suvendu-terraform-state"
-    key    = "eks/test/terraform.tfstate"
+    bucket = var.s3_bucket_name
+    key    = var.tfstate_file_path
   #  region = var.region_name
     encrypt= true
   }
 }
-##
-#resource "aws_s3_bucket" "terraform-state" {
-#  bucket = "landg-terraform-state"
-#  lifecycle {
-#    prevent_destroy = true
-#  }
-#  versioning {
-#    enabled = true
-#  }
-#  server_side_encryption_configuration {
-#    rule {
-#      apply_server_side_encryption_by_default {
-#        sse_algorithm = "AES256"
-#      }
-#    }
-#  }
-#
-#}
+
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.eks_cluster.endpoint
   token                  = data.aws_eks_cluster_auth.aws_iam_authenticator.token

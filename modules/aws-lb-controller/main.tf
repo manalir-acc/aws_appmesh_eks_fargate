@@ -25,7 +25,7 @@ resource "aws_iam_policy" "this" {
   # We use a heredoc for the policy JSON so that we can more easily diff and
   # copy/paste from upstream. Ignore whitespace when you diff to more easily see the changes!
   # Source: `curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.3.1/docs/install/iam_policy.json`
-  policy = file("${path.module}/iam_policy.json")
+  policy = file("${path.module}/aws_lb_controller_iam_policy.json")
         tags = {
                  Name = "${var.k8s_cluster_name}-lb_controller-iam"
                 }
