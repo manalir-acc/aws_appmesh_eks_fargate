@@ -4,14 +4,15 @@ locals {
   alb_controller_chart_version = var.aws_appmesh_controller_chart_version
   aws_vpc_id                   = data.aws_vpc.selected.id
   aws_region_name              = data.aws_region.current.name
+  service_account_name         = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
 }
 
 resource "kubernetes_namespace" "appmesh_namespace" {
   metadata {
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "app.kubernetes.io/managed-by" = "helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
     }
     name = var.k8s_namespace
@@ -19,7 +20,7 @@ resource "kubernetes_namespace" "appmesh_namespace" {
 }
 
 resource "aws_iam_role" "this" {
-  name        = substr("${var.k8s_cluster_name}-aws-appmesh-controller", 0, 64)
+  name        = local.service_account_name
   description = "Permissions required by the Kubernetes AWS Appmesh controller to do its job."
   path        = null
   tags = var.aws_tags
@@ -29,7 +30,7 @@ resource "aws_iam_role" "this" {
 
 
 resource "aws_iam_policy" "this" {
-  name        = substr("${var.k8s_cluster_name}-appmesh-controller-management",0,64)
+  name        = local.service_account_name
   description = format("Permissions that are required to manage AWS Appmesh.")
   path        = "/"
   # We use a heredoc for the policy JSON so that we can more easily diff and
@@ -49,7 +50,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "kubernetes_service_account" "this" {
   automount_service_account_token = true
   metadata {
-    name      =  substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+    name      =  local.service_account_name
     namespace = var.k8s_namespace
     annotations = {
       # This annotation is only used when running on EKS which can
@@ -58,7 +59,7 @@ resource "kubernetes_service_account" "this" {
       "appmesh.amazonaws.com/role-arn" = aws_iam_role.this.arn
     }
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/managed-by" = "helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
@@ -69,10 +70,10 @@ resource "kubernetes_service_account" "this" {
 
 resource "kubernetes_cluster_role" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+    name = local.service_account_name
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
@@ -101,10 +102,10 @@ resource "kubernetes_cluster_role" "this" {
 
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+    name = local.service_account_name
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }

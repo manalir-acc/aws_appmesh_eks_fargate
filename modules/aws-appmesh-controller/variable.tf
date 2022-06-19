@@ -48,3 +48,10 @@ variable "chart_env_overrides" {
   type        = map(any)
   default     = {}
 }
+
+variable "service_account_name" {
+  description = "Service Account Name of the AWS AppMesh Controller"
+  type        = string
+  default     = "appmesh-controller"
+}
+
