@@ -1,5 +1,5 @@
 data "aws_vpc" "selected" {
-  id = data.aws_eks_cluster.selected[0].vpc_config[0].vpc_id
+  id = data.aws_eks_cluster.selected.vpc_config.vpc_id
 }
 
 data "aws_region" "current" {
@@ -27,14 +27,14 @@ data "aws_iam_policy_document" "eks_oidc_assume_role" {
     effect  = "Allow"
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.aws_eks_cluster.selected[0].identity[0].oidc[0].issuer, "https://", "")}:sub"
+      variable = "${replace(data.aws_eks_cluster.selected.identity.oidc.issuer, "https://", "")}:sub"
       values = [
         "system:serviceaccount:${var.k8s_namespace}:appmesh-controller"
       ]
     }
     principals {
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${replace(data.aws_eks_cluster.selected[0].identity[0].oidc[0].issuer, "https://", "")}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${replace(data.aws_eks_cluster.selected.identity.oidc.issuer, "https://", "")}"
       ]
       type = "Federated"
     }
