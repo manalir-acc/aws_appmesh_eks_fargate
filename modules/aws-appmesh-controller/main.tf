@@ -84,6 +84,7 @@ resource "kubernetes_cluster_role" "this" {
   }
 }
 
+
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
     name = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
