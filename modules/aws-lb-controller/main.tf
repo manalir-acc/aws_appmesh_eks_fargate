@@ -54,7 +54,9 @@ resource "kubernetes_service_account" "this" {
     labels = {
       "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "meta.helm.sh/release-name"   = "aws-load-balancer-controller"
+      "meta.helm.sh/release-namespace" = "kube-system"
     }
   }
 }
@@ -162,7 +164,7 @@ resource "helm_release" "alb_controller" {
   set {
       name = "serviceAccount.create"
       value = "false"
-      type = "string"
+      type = "auto"
   }
   set {
       name = "serviceAccount.name"
@@ -182,7 +184,7 @@ resource "helm_release" "alb_controller" {
   set {
       name =  "hostNetwork"
       value =   var.enable_host_networking
-      type = "string"
+      type = "auto"
   }
 }
 
