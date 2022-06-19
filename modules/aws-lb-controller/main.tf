@@ -14,7 +14,7 @@ resource "aws_iam_role" "this" {
   path        = local.aws_iam_path_prefix
   tags = var.aws_tags
   force_detach_policies = true
-  assume_role_policy = var.k8s_cluster_type == "vanilla" ? data.aws_iam_policy_document.ec2_assume_role[0].json : data.aws_iam_policy_document.eks_oidc_assume_role[0].json
+  assume_role_policy =  data.aws_iam_policy_document.eks_oidc_assume_role[0].json
 }
 
 
@@ -27,7 +27,7 @@ resource "aws_iam_policy" "this" {
   # Source: `curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.3.1/docs/install/iam_policy.json`
   policy = file("${path.module}/iam_policy.json")
         tags = {
-                 Name        = "${var.k8s_cluster_name}-lb_controller-iam"
+                 Name = "${var.k8s_cluster_name}-lb_controller-iam"
                 }
   }
 
@@ -138,8 +138,6 @@ resource "kubernetes_cluster_role_binding" "this" {
     namespace = kubernetes_service_account.this.metadata[0].namespace
   }
 }
-
-
 
 
 resource "helm_release" "alb_controller" {

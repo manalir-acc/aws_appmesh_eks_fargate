@@ -9,7 +9,7 @@ locals {
 resource "kubernetes_namespace" "appmesh_namespace" {
   metadata {
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/managed-by" = "Helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "kubernetes_service_account" "this" {
   automount_service_account_token = true
   metadata {
-    name      =  substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+    name      =  substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
     namespace = var.k8s_namespace
     annotations = {
       # This annotation is only used when running on EKS which can
@@ -58,7 +58,7 @@ resource "kubernetes_service_account" "this" {
       "appmesh.amazonaws.com/role-arn" = aws_iam_role.this.arn
     }
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/managed-by" = "Helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
@@ -69,10 +69,10 @@ resource "kubernetes_service_account" "this" {
 
 resource "kubernetes_cluster_role" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+    name = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
@@ -101,10 +101,10 @@ resource "kubernetes_cluster_role" "this" {
 
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+    name = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
@@ -123,7 +123,7 @@ resource "kubernetes_cluster_role_binding" "this" {
   }
 }
 
-resource "helm_release" "alb_controller" {
+resource "helm_release" "appmesh-controller" {
 
   name       = "appmesh-controller"
   repository = local.appmesh_controller_helm_repo

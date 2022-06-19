@@ -12,7 +12,7 @@ variable "k8s_cluster_name" {
 variable "k8s_namespace" {
   description = "Kubernetes namespace to deploy the AWS Load Balancer Controller into."
   type        = string
-  default     = "default"
+  default     = "kube-system"
 }
 
 variable "k8s_replicas" {
@@ -82,16 +82,3 @@ variable "enable_host_networking" {
   default     = false
 }
 
-/*
-variable "chart_env_overrides" {
-  description = "env values passed to the load balancer controller helm chart."
-  type        = map(any)
-  default     = {}
-}
-
-
-variable "alb_controller_depends_on" {
-  description = "Resources that the module should wait for before starting the controller. For example if there is no node_group, 'aws_eks_fargate_profile.default'"
-  default = null
-}
-*/

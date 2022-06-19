@@ -48,7 +48,3 @@ variable "chart_env_overrides" {
   type        = map(any)
   default     = {}
 }
-
-variable "environment" {
-  default = ""
-}
