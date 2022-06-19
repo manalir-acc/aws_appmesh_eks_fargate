@@ -17,7 +17,7 @@ cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
 fargate_app_namespace        =  ["ns-fargate-app", "ns-fargate-app2"]
 github_runner_base_path      = "/home/runner/"
-s3_bucket_name               =  "suvendu-terraform-state"
-tfstate_file_path            =  "eks/test/terraform.tfstate"
+#s3_bucket_name               =  "suvendu-terraform-state"
+#tfstate_file_path            =  "eks/test/terraform.tfstate"
 
 
