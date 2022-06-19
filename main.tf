@@ -70,7 +70,7 @@ module "aws_appmesh_controller" {
   source  = "./modules/aws-appmesh-controller"
   k8s_namespace    = "appmesh-system"
   k8s_cluster_name = module.eks.eks_cluster_name
-  depends_on = [module.eks, module.aws_alb_controller]
+  depends_on = [module.eks]
 }
 
 
