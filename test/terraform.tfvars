@@ -1,6 +1,6 @@
 # EKS Cluster and Network Infrastructure
 environment                  =  "testing"
-user_profile                 =  "AWS_741032333307_User"
+#user_profile                 =  "AWS_741032333307_User"
 user_os                      =  "linux"
 cluster_name                 =  "sm-eks-clstr"
 cluster_version              =  "1.22"
@@ -16,5 +16,6 @@ availability_zones_private   =  ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 cidr_block_internet_gw       =  "0.0.0.0/0"
 cidr_block_nat_gw            =  "0.0.0.0/0"
 fargate_app_namespace        =  ["ns-fargate-app", "ns-fargate-app2"]
+github_runner_base_path      = "/home/runner/"
 
 

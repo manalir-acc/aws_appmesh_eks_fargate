@@ -31,4 +31,8 @@ variable "user_os" {
   description = "Operating system used by user to execute Terraform, Kubectl, aws commands. e.g. \"windows\" or \"linux\""
 }
 
-
+variable "github_runner_base_path" {
+  description = "GitHub Actions Runner Base path for Linux"
+  type = string
+  default = "/home/runner/"
+}

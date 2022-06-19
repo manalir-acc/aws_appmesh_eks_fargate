@@ -9,7 +9,7 @@ locals {
 resource "aws_iam_role" "this" {
   name        = substr("${var.k8s_cluster_name}-aws-appmesh-controller", 0, 64)
   description = "Permissions required by the Kubernetes AWS Appmesh controller to do its job."
-  path        = ""
+  path        = null
   tags = var.aws_tags
   force_detach_policies = true
   assume_role_policy = data.aws_iam_policy_document.eks_oidc_assume_role[0].json
