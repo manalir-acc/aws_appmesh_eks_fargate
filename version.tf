@@ -9,6 +9,6 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.0"
     }
-    helm       = ">= 3.2.4" #">= 1.4.1"
+    helm       = ">= 3.2.1" #">= 1.4.1"
   }
 }
