@@ -60,7 +60,7 @@ resource "kubernetes_service_account" "this" {
     labels = {
       "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "app.kubernetes.io/managed-by" = "helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
       "meta.helm.sh/release-namespace" = var.k8s_namespace
     }

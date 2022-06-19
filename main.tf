@@ -64,14 +64,14 @@ module "eks_kubernetes_addons" {
 }
 
 
-
+/*
 module "aws_appmesh_controller" {
   source  = "./modules/aws-appmesh-controller"
   k8s_namespace    = "appmesh-system"
   k8s_cluster_name = module.eks.eks_cluster_name
   depends_on =  [module.eks, module.coredns_patching]  
 }
-
+*/
 
 
 module "kubernetes_app" {

@@ -6,6 +6,7 @@ locals {
   aws_vpc_id                   = data.aws_vpc.selected.id
   aws_region_name              = data.aws_region.current.name
   aws_iam_path_prefix          = var.aws_iam_path_prefix == "" ? null : var.aws_iam_path_prefix
+  service_account_name         = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
 }
 
 resource "aws_iam_role" "this" {
@@ -41,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "kubernetes_service_account" "this" {
   automount_service_account_token = true
   metadata {
-    name      =  substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+    name      =  local.service_account_name
     namespace = var.k8s_namespace
     annotations = {
       # This annotation is only used when running on EKS which can
@@ -49,9 +50,9 @@ resource "kubernetes_service_account" "this" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.this.arn
     }
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "app.kubernetes.io/managed-by" = "helm" # "terraform" #
       "meta.helm.sh/release-name"   = "aws-load-balancer-controller"
       "meta.helm.sh/release-namespace" = var.k8s_namespace
     }
@@ -60,10 +61,10 @@ resource "kubernetes_service_account" "this" {
 
 resource "kubernetes_cluster_role" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+    name = local.service_account_name
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
@@ -117,10 +118,10 @@ resource "kubernetes_cluster_role" "this" {
 
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+    name = local.service_account_name
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-aws-load-balancer-controller",0,64)
+      "app.kubernetes.io/name"       = local.service_account_name
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }

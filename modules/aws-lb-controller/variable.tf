@@ -83,3 +83,9 @@ variable "enable_host_networking" {
 }
 
 
+variable "service_account_name" {
+  description = "Service Account Name of the AWS Load Balancer Controller"
+  type        = string
+  default     = "aws-load-balancer-controller"
+}
+
