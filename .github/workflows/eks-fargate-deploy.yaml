@@ -1,6 +1,5 @@
 name: "Terraform Deployment"
 on:
-  # Manual trigger
   workflow_dispatch:
   push:
     paths:
@@ -42,11 +41,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_TOKEN }}
           aws-region: eu-west-2
-    #  - name: run config file
-    #    run: |
-    #      pwd
-    #      chmod -R 755 config-file.sh
-    #      ./config-file.sh
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
@@ -62,7 +56,7 @@ jobs:
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
             VAR_EKS_CLUSTER_NAME=$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
-            echo $VAR_EKS_CLUSTER_NAME
+            echo "EKS Cluster found: "$VAR_EKS_CLUSTER_NAME
             if [ "$AWS_EKS_CLUSTER_NAME" == "$VAR_EKS_CLUSTER_NAME" ]; 
             then
              aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME} 
@@ -71,12 +65,12 @@ jobs:
             fi
             cat /home/runner/.kube/config
       - name: Terraform Plan
-        if: always()
+        #if: always()
         id: plan
         run: |
           terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
       - name: Terraform apply
-        if: always()
+        #if: always()
        # if: github.ref == 'refs/heads/master'
         id: apply
         run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
@@ -84,13 +78,6 @@ jobs:
 #        #if: github.ref == 'refs/heads/master'
 #        id: destroy
 #        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
-#     - name: adding config file to s3
-#       run: |
-#         cd /home/runner/.kube
-#         chmod -R 755 /home/runner/.kube
-#         aws s3 cp --recursive /home/runner/.kube/ s3://landg-terraform-state/eks/configfile/ --region "eu-west-2"
-#         ls -lart
-#         cat config-custom.cfg
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
