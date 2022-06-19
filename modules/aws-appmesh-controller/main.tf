@@ -6,6 +6,18 @@ locals {
   aws_region_name              = data.aws_region.current.name
 }
 
+resource "kubernetes_namespace" "appmesh_namespace" {
+  metadata {
+    labels = {
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
+      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "meta.helm.sh/release-name"   = "appmesh-controller"
+    }
+    name = var.k8s_namespace
+  }
+}
+
 resource "aws_iam_role" "this" {
   name        = substr("${var.k8s_cluster_name}-aws-appmesh-controller", 0, 64)
   description = "Permissions required by the Kubernetes AWS Appmesh controller to do its job."
@@ -48,7 +60,9 @@ resource "kubernetes_service_account" "this" {
     labels = {
       "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = "Helm" #"terraform"
+      "meta.helm.sh/release-name"   = "appmesh-controller"
+      "meta.helm.sh/release-namespace" = var.k8s_namespace
     }
   }
 }
@@ -116,7 +130,7 @@ resource "helm_release" "alb_controller" {
   chart      = local.appmesh_controller_chart_name
   version    = local.alb_controller_chart_version
   namespace  = var.k8s_namespace
-  create_namespace = true
+  create_namespace = false
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true
@@ -129,7 +143,7 @@ resource "helm_release" "alb_controller" {
   set {
       name = "serviceAccount.create"
       value = "false"
-      type = "string"
+      type = "auto"
   }
   set {
       name = "serviceAccount.name"
@@ -149,7 +163,7 @@ resource "helm_release" "alb_controller" {
   set {
       name =  "hostNetwork"
       value = var.enable_host_networking
-      type = "string"
+      type = "auto"
   }
 }
 

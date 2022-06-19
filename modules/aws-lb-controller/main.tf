@@ -56,7 +56,7 @@ resource "kubernetes_service_account" "this" {
       "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/managed-by" = "Helm" #"terraform"
       "meta.helm.sh/release-name"   = "aws-load-balancer-controller"
-      "meta.helm.sh/release-namespace" = "kube-system"
+      "meta.helm.sh/release-namespace" = var.k8s_namespace
     }
   }
 }
@@ -152,6 +152,7 @@ resource "helm_release" "alb_controller" {
   chart      = local.alb_controller_chart_name
   version    = local.alb_controller_chart_version
   namespace  = var.k8s_namespace
+  create_namespace = false
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true
