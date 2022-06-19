@@ -15,7 +15,6 @@ module "vpc" {
     cidr_block_nat_gw                   =  var.cidr_block_nat_gw
     cidr_block_internet_gw              =  var.cidr_block_internet_gw
 }
-                                       #
 
 
 module "eks" {
@@ -61,7 +60,7 @@ module "eks_kubernetes_addons" {
   k8s_cluster_type = var.cluster_type
   k8s_namespace    = "kube-system"
   k8s_cluster_name = module.eks.eks_cluster_name
-  depends_on = [module.aws_alb_controller]
+  depends_on = [module.eks]
 }
 
 
@@ -70,7 +69,7 @@ module "aws_appmesh_controller" {
   source  = "./modules/aws-appmesh-controller"
   k8s_namespace    = "appmesh-system"
   k8s_cluster_name = module.eks.eks_cluster_name
-  depends_on =  [module.eks, module.coredns_patching]
+  depends_on =  [module.eks]
 }
 
 
