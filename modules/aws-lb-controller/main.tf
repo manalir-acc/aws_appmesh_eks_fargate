@@ -161,8 +161,8 @@ resource "helm_release" "alb_controller" {
   }
   set {
       name = "serviceAccount.create"
-      value = false
-      type = "bool"
+      value = "false"
+      type = "string"
   }
   set {
       name = "serviceAccount.name"
@@ -181,8 +181,8 @@ resource "helm_release" "alb_controller" {
   }
   set {
       name =  "hostNetwork"
-      value = false # var.enable_host_networking
-      type = "bool"
+      value =   var.enable_host_networking
+      type = "string"
   }
 }
 
