@@ -64,18 +64,20 @@ jobs:
               echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} not present in ${AWS_DEFAULT_REGION}"
             fi
             cat /home/runner/.kube/config
-#      - name: Terraform Plan
-#        #if: always()
-#        id: plan
-#        run: |
-#          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
-#      - name: Terraform apply
-#        #if: always()
-#       # if: github.ref == 'refs/heads/master'
-#        id: apply
-#        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+      - name: Terraform Plan
+        #if: always()
+        if: "!contains(github.event.head_commit.message, 'Destroy')"
+        id: plan
+        run: echo "Planning" # terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+      - name: Terraform apply
+        #if: always()
+       # if: github.ref == 'refs/heads/master'
+        if: "!contains(github.event.head_commit.message, 'Destroy')"
+        id: apply
+        run: echo "applying" # terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
       - name: Terraform Destroy
         #if: github.ref == 'refs/heads/master'
+        if: "contains(github.event.head_commit.message, 'Destroy')"
         id: destroy
         run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
   comment:
