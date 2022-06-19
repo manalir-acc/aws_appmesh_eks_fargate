@@ -123,7 +123,7 @@ resource "kubernetes_cluster_role_binding" "this" {
   }
 }
 
-resource "helm_release" "alb_controller" {
+resource "helm_release" "appmesh_controller" {
 
   name       = "appmesh-controller"
   repository = local.appmesh_controller_helm_repo

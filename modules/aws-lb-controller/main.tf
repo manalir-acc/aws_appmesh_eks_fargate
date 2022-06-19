@@ -12,11 +12,8 @@ resource "aws_iam_role" "this" {
   name        = substr("${var.aws_resource_name_prefix}${var.k8s_cluster_name}-aws-load-balancer-controller", 0, 64)
   description = "Permissions required by the Kubernetes AWS Load Balancer controller to do its job."
   path        = local.aws_iam_path_prefix
-
   tags = var.aws_tags
-
   force_detach_policies = true
-
   assume_role_policy = var.k8s_cluster_type == "vanilla" ? data.aws_iam_policy_document.ec2_assume_role[0].json : data.aws_iam_policy_document.eks_oidc_assume_role[0].json
 }
 
