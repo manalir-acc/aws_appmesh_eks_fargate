@@ -25,7 +25,7 @@ resource "aws_iam_policy" "this" {
   # Source: `curl -o controller-iam-policy.json https://raw.githubusercontent.com/aws/aws-app-mesh-controller-for-k8s/master/config/iam/controller-iam-policy.json`
   policy = file("${path.module}/aws_appmesh_iam_policy.json")
         tags = {
-                 Name        = "${var.k8s_cluster_name}-aws-appmesh-controller-iam"
+                 Name        = "${var.k8s_cluster_name}-appmesh-controller-iam"
                 }
   }
 
@@ -37,15 +37,16 @@ resource "aws_iam_role_policy_attachment" "this" {
 resource "kubernetes_service_account" "this" {
   automount_service_account_token = true
   metadata {
-    name      =  substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+    name      =  substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
     namespace = var.k8s_namespace
     annotations = {
       # This annotation is only used when running on EKS which can
       # use IAM roles for service accounts.
       "eks.amazonaws.com/role-arn" = aws_iam_role.this.arn
+      "appmesh.amazonaws.com/role-arn" = aws_iam_role.this.arn
     }
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
       "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/managed-by" = "terraform"
     }
@@ -54,10 +55,10 @@ resource "kubernetes_service_account" "this" {
 
 resource "kubernetes_cluster_role" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+    name = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }
@@ -85,10 +86,10 @@ resource "kubernetes_cluster_role" "this" {
 
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
-    name = substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+    name = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
 
     labels = {
-      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-aws-appmesh-controller",0,64)
+      "app.kubernetes.io/name"       = substr("${var.k8s_cluster_name}-${var.environment}-appmesh-controller",0,64)
       "app.kubernetes.io/managed-by" = "terraform"
     }
   }

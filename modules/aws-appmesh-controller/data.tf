@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "eks_oidc_assume_role" {
       test     = "StringEquals"
       variable = "${replace(data.aws_eks_cluster.selected[0].identity[0].oidc[0].issuer, "https://", "")}:sub"
       values = [
-        "system:serviceaccount:${var.k8s_namespace}:aws-load-balancer-controller"
+        "system:serviceaccount:${var.k8s_namespace}:appmesh-controller"
       ]
     }
     principals {
