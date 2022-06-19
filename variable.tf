@@ -38,6 +38,7 @@ variable "github_runner_base_path" {
 }
 
 
+/*
 variable "s3_bucket_name" {
   default = "suvendu-terraform-state"
   type = string
@@ -48,3 +49,4 @@ variable "tfstate_file_path" {
   default = "eks/test/terraform.tfstate"
   type = string
 }
+*/
