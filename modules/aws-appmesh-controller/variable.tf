@@ -1,4 +1,6 @@
-
+variable "k8s_cluster_type" {
+  default = "eks"
+}
 
 variable "k8s_cluster_name" {
   description = "Name of the Kubernetes cluster. This string is used to contruct the AWS IAM permissions and roles. If targeting EKS, the corresponsing managed cluster name must match as well."
