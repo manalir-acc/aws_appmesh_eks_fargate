@@ -99,5 +99,3 @@ resource "kubernetes_ingress_v1" "game-app-ingress" {
     kubernetes_service_v1.game-app-service
   ]
 }
-
-
