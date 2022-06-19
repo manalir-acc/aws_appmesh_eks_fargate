@@ -74,10 +74,10 @@ jobs:
 #       # if: github.ref == 'refs/heads/master'
 #        id: apply
 #        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
-       - name: Terraform Destroy
-         if: github.ref == 'refs/heads/master'
-         id: destroy
-         run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+      - name: Terraform Destroy
+        #if: github.ref == 'refs/heads/master'
+        id: destroy
+        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
