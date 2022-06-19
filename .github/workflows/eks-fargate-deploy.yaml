@@ -44,40 +44,40 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Terraform Init
-        id: init
-        run: |
-           rm -rf .terraform
-           terraform init
-      - name: EKS Cluster Config Update
-        run: |
-            echo "create a folder structure and file" 
-            mkdir /home/runner/.kube/
-            touch /home/runner/.kube/config
-            chmod -R 777 /home/runner/.kube/
-            VAR_EKS_CLUSTER_NAME=$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
-            echo "EKS Cluster found: "$VAR_EKS_CLUSTER_NAME
-            if [ "$AWS_EKS_CLUSTER_NAME" == "$VAR_EKS_CLUSTER_NAME" ]; 
-            then
-             aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME} 
-            else
-              echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} not present in ${AWS_DEFAULT_REGION}"
-            fi
-            cat /home/runner/.kube/config
-      - name: Terraform Plan
-        #if: always()
-        id: plan
-        run: |
-          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
-      - name: Terraform apply
-        #if: always()
-       # if: github.ref == 'refs/heads/master'
-        id: apply
-        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
-#      - name: Terraform Destroy
-#        #if: github.ref == 'refs/heads/master'
-#        id: destroy
-#        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+#      - name: Terraform Init
+#        id: init
+#        run: |
+#           rm -rf .terraform
+#           terraform init
+#      - name: EKS Cluster Config Update
+#        run: |
+#            echo "create a folder structure and file"
+#            mkdir /home/runner/.kube/
+#            touch /home/runner/.kube/config
+#            chmod -R 777 /home/runner/.kube/
+#            VAR_EKS_CLUSTER_NAME=$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
+#            echo "EKS Cluster found: "$VAR_EKS_CLUSTER_NAME
+#            if [ "$AWS_EKS_CLUSTER_NAME" == "$VAR_EKS_CLUSTER_NAME" ];
+#            then
+#             aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}
+#            else
+#              echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} not present in ${AWS_DEFAULT_REGION}"
+#            fi
+#            cat /home/runner/.kube/config
+#      - name: Terraform Plan
+#        #if: always()
+#        id: plan
+#        run: |
+#          terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+#      - name: Terraform apply
+#        #if: always()
+#       # if: github.ref == 'refs/heads/master'
+#        id: apply
+#        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+     - name: Terraform Destroy
+       #if: github.ref == 'refs/heads/master'
+       id: destroy
+       run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
