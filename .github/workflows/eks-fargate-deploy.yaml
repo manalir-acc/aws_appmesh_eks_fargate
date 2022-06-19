@@ -49,16 +49,18 @@ jobs:
         run: |
            rm -rf .terraform
            terraform init
-      - name: EKS Cluster Config Update
+      - name: EKS cluster Kubectl config update
         run: |
-            echo "create a folder structure and file"
+            echo "Create a Kubectl folder structure and file"
             mkdir /home/runner/.kube/
             touch /home/runner/.kube/config
             chmod -R 777 /home/runner/.kube/
+            echo "Finding existing EKS cluster" 
             VAR_EKS_CLUSTER_NAME=$(aws eks list-clusters --region ${AWS_DEFAULT_REGION} --query clusters[0] --output text)
             echo "EKS Cluster found: "$VAR_EKS_CLUSTER_NAME
             if [ "$AWS_EKS_CLUSTER_NAME" == "$VAR_EKS_CLUSTER_NAME" ];
             then
+             echo "EKS cluster found and setting Kubectl config" 
              aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${AWS_EKS_CLUSTER_NAME}
             else
               echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} not present in ${AWS_DEFAULT_REGION}"
@@ -68,13 +70,13 @@ jobs:
         #if: always()
         if: "!contains(github.event.head_commit.message, 'Destroy')"
         id: plan
-        run: echo "Planning" # terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+        run: terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
       - name: Terraform apply
         #if: always()
        # if: github.ref == 'refs/heads/master'
         if: "!contains(github.event.head_commit.message, 'Destroy')"
         id: apply
-        run: echo "applying" # terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
       - name: Terraform Destroy
         #if: github.ref == 'refs/heads/master'
         if: "contains(github.event.head_commit.message, 'Destroy')"
