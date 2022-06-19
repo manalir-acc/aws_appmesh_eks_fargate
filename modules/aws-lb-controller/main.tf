@@ -18,7 +18,6 @@ resource "aws_iam_role" "this" {
   assume_role_policy =  data.aws_iam_policy_document.eks_oidc_assume_role[0].json
 }
 
-
 resource "aws_iam_policy" "this" {
   name        = substr("${var.aws_resource_name_prefix}${var.k8s_cluster_name}-alb-management",0,64)
   description = format("Permissions that are required to manage AWS Application Load Balancers.")
