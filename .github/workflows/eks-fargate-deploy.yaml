@@ -24,16 +24,16 @@ jobs:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          AWS_TOKEN: ${{ secrets.AWS_TOKEN }}
-         AWS_DEFAULT_REGION: eu-west-2
-         AWS_EKS_CLUSTER_NAME: sm-eks-clstr-testing
     steps:
       - uses: actions/checkout@v2
+
       - name: Install kubectl
         uses: azure/setup-kubectl@v1
         with:
           version: 'v1.22.10'
         id: install
       - uses: actions/checkout@v2
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -44,12 +44,45 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Terraform Init
-        id: init
+      - uses: actions/checkout@v1
+
+      - name: Read EKS cluster name from config yaml action
+        id: yaml-data-cluster-name
+        uses: KJ002/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.
+        with:
+          file: './workflow-config/eks-config.yaml'          # File to read from
+          key-path: '["EKSConfig", "clusterName"]' # Access the runs key then the using key and retuns the value.
+
+      - name: Display Env Config YAML and Set Cluster Name Env variable
         run: |
-           rm -rf .terraform
-           terraform init
-      - name: EKS cluster Kubectl config update
+            echo "Config file EKS cluster name: ${{ steps.yaml-data-cluster-name.outputs.data }}"
+            echo "Setting Env variable with EKS cluster name...."
+            echo "AWS_EKS_CLUSTER_NAME=$(echo "${{ steps.yaml-data-cluster-name.outputs.data }}")" >> $GITHUB_ENV
+
+      - name: Checking the Env variable for cluster name
+        id: Test-Cluster-name-Env-Var
+        run: |
+          echo "EKS Cluster name in env variable: ${AWS_EKS_CLUSTER_NAME}"
+
+      - name: Read AWS Region Name from config yaml action
+        id: yaml-data-cluster-region
+        uses: KJ002/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.
+        with:
+          file: './workflow-config/eks-config.yaml'            # File to read from
+          key-path: '["EKSConfig", "clusterRegion"]' # Access the runs key then the using key and retuns the value.
+
+      - name: Display Env Config YAML and Set Cluster Region Env variable
+        run: |
+            echo "Config file EKS cluster AWS Region: ${{ steps.yaml-data-cluster-region.outputs.data }}"
+            echo "Setting Env variable with EKS cluster AWS Region...."
+            echo "AWS_DEFAULT_REGION=$(echo "${{ steps.yaml-data-cluster-region.outputs.data }}")" >> $GITHUB_ENV
+
+      - name: Checking the Env variable for cluster AWS Region
+        id: Test-Cluster-Region-Env-Var
+        run: |
+          echo "EKS Cluster AWS Region in env variable: ${AWS_DEFAULT_REGION}"
+
+      - name: EKS cluster Kubectl Config update
         run: |
             echo "Creating Kubectl folder structure and file...."
             mkdir /home/runner/.kube/
@@ -66,17 +99,32 @@ jobs:
               echo "EKS Cluster: ${AWS_EKS_CLUSTER_NAME} is not present in ${AWS_DEFAULT_REGION}"
             fi
             cat /home/runner/.kube/config
+
+      - name: Format Terraform
+        run: terraform fmt
+
+      - name: Terraform Init
+        id: init
+        run: |
+           rm -rf .terraform
+           terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
       - name: Terraform Plan
         #if: always()
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: plan
-        run: terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+        run: TF_LOG=DEBUG terraform plan -input=false -var-file=${{ matrix.environment }}/terraform.tfvars -no-color
+
       - name: Terraform apply
         #if: always()
        # if: github.ref == 'refs/heads/master'
         if: "!contains(github.event.head_commit.message, 'destroy')"
         id: apply
-        run: terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform apply -auto-approve -input=false -var-file=${{matrix.environment }}/terraform.tfvars
+
       - name: Terraform Destroy
         #if: github.ref == 'refs/heads/master'
         if: "contains(github.event.head_commit.message, 'destroy')"

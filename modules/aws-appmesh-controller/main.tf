@@ -4,9 +4,10 @@ locals {
   alb_controller_chart_version = var.aws_appmesh_controller_chart_version
   aws_vpc_id                   = data.aws_vpc.selected.id
   aws_region_name              = data.aws_region.current.name
-  service_account_name         = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
+  service_account_name         = "appmesh-controller"
 }
 
+/*
 resource "kubernetes_namespace" "appmesh_namespace" {
   metadata {
     labels = {
@@ -18,6 +19,7 @@ resource "kubernetes_namespace" "appmesh_namespace" {
     name = var.k8s_namespace
   }
 }
+*/
 
 resource "aws_iam_role" "this" {
   name        = local.service_account_name
@@ -44,6 +46,16 @@ resource "aws_iam_policy" "this" {
 
 resource "aws_iam_role_policy_attachment" "this" {
   policy_arn = aws_iam_policy.this.arn
+  role       = aws_iam_role.this.name
+}
+
+resource "aws_iam_role_policy_attachment" "this1" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
+  role       = aws_iam_role.this.name
+}
+
+resource "aws_iam_role_policy_attachment" "this2" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
   role       = aws_iam_role.this.name
 }
 
@@ -74,9 +86,36 @@ resource "kubernetes_cluster_role" "this" {
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/managed-by" = "helm" #"terraform"
     }
   }
+
+  rule {
+    api_groups = [
+      "",
+      "extensions",
+    ]
+
+    resources = [
+      "configmaps",
+      "endpoints",
+      "events",
+      "ingresses",
+      "ingresses/status",
+      "services",
+    ]
+
+    verbs = [
+      "create",
+      "get",
+      "list",
+      "update",
+      "watch",
+      "patch",
+    ]
+  }
+
   rule {
     api_groups = [
       "",
@@ -99,14 +138,13 @@ resource "kubernetes_cluster_role" "this" {
   }
 }
 
-
 resource "kubernetes_cluster_role_binding" "this" {
   metadata {
     name = local.service_account_name
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/managed-by" = "helm" #"terraform"
     }
   }
 
@@ -131,7 +169,7 @@ resource "helm_release" "appmesh-controller" {
   chart      = local.appmesh_controller_chart_name
   version    = local.alb_controller_chart_version
   namespace  = var.k8s_namespace
-  create_namespace = false
+  create_namespace = true
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true

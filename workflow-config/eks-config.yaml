@@ -1,0 +1,4 @@
+EKSConfig:
+    envName: "test"
+    clusterName: "sm-eks-clstr-testing"
+    clusterRegion: "eu-west-2"

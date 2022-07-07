@@ -5,6 +5,15 @@
 
 provider "aws" {
   region     = var.region_name
+  default_tags {
+   tags = {
+     Owner = "Suvendu Mandal"
+     Owner_Email       = "suvendu.mandal@accenture.com"
+     Owner_Group     = "Accenture UK - AABG"
+     Owner_Location     = "UK"
+     Environment =  var.environment
+   }
+ }
 }
 
 
