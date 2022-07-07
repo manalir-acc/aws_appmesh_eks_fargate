@@ -12,6 +12,7 @@ provider "aws" {
      Owner_Group     = "Accenture UK - AABG"
      Owner_Location     = "UK"
      Environment =  var.environment
+     Resource_Region = var.region_name
    }
  }
 }

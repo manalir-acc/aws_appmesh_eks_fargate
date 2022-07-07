@@ -4,7 +4,7 @@ locals {
   alb_controller_chart_version = var.aws_appmesh_controller_chart_version
   aws_vpc_id                   = data.aws_vpc.selected.id
   aws_region_name              = data.aws_region.current.name
-  service_account_name         = "appmesh-controller"
+  service_account_name         = substr("${var.k8s_cluster_name}-appmesh-controller",0,64)
 }
 
 
@@ -12,7 +12,7 @@ resource "kubernetes_namespace" "appmesh_namespace" {
   metadata {
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/component"  = "appmesh-controller"
       "app.kubernetes.io/managed-by" = "helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
     }
@@ -72,7 +72,7 @@ resource "kubernetes_service_account" "this" {
     }
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/component"  = "appmesh-controller"
       "app.kubernetes.io/managed-by" = "helm" #"terraform"
       "meta.helm.sh/release-name"   = "appmesh-controller"
       "meta.helm.sh/release-namespace" = var.k8s_namespace
@@ -86,7 +86,7 @@ resource "kubernetes_cluster_role" "this" {
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/component"  = "appmesh-controller"
       "app.kubernetes.io/managed-by" = "helm" #"terraform"
     }
   }
@@ -145,6 +145,7 @@ resource "kubernetes_cluster_role_binding" "this" {
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
+      "app.kubernetes.io/component"  = "appmesh-controller"
       "app.kubernetes.io/managed-by" = "helm" #"terraform"
     }
   }

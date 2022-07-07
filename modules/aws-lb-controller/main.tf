@@ -50,7 +50,7 @@ resource "kubernetes_service_account" "this" {
     }
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/component"  = "lb-controller"
       "app.kubernetes.io/managed-by" = "helm" # "terraform" #
       "meta.helm.sh/release-name"   = "aws-load-balancer-controller"
       "meta.helm.sh/release-namespace" = var.k8s_namespace
@@ -64,7 +64,8 @@ resource "kubernetes_cluster_role" "this" {
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/component"  = "lb-controller"
+      "app.kubernetes.io/managed-by" = "helm" # "terraform" #
     }
   }
 
@@ -121,7 +122,8 @@ resource "kubernetes_cluster_role_binding" "this" {
 
     labels = {
       "app.kubernetes.io/name"       = local.service_account_name
-      "app.kubernetes.io/managed-by" = "terraform"
+      "app.kubernetes.io/component"  = "lb-controller"
+      "app.kubernetes.io/managed-by" = "helm" # "terraform" #
     }
   }
 
