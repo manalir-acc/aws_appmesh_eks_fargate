@@ -7,7 +7,7 @@ locals {
   service_account_name         = "appmesh-controller"
 }
 
-/*
+
 resource "kubernetes_namespace" "appmesh_namespace" {
   metadata {
     labels = {
@@ -19,7 +19,7 @@ resource "kubernetes_namespace" "appmesh_namespace" {
     name = var.k8s_namespace
   }
 }
-*/
+
 
 resource "aws_iam_role" "this" {
   name        = local.service_account_name
@@ -104,6 +104,7 @@ resource "kubernetes_cluster_role" "this" {
       "ingresses",
       "ingresses/status",
       "services",
+      "appmesh",
     ]
 
     verbs = [
@@ -169,7 +170,7 @@ resource "helm_release" "appmesh-controller" {
   chart      = local.appmesh_controller_chart_name
   version    = local.alb_controller_chart_version
   namespace  = var.k8s_namespace
-  create_namespace = true
+  create_namespace = false
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true
