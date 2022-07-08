@@ -9,7 +9,7 @@ locals {
     aws_region_name                = data.aws_region.current.name
     eks_cluster_id                 = module.eks.eks_cluster_name
     eks_oidc_issuer_url            = module.eks.oidc_provider
-    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.oidc_provider_arn}"
+    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.oidc_provider}"
     tags                           = var.tags
   }
 }

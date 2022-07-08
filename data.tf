@@ -1,8 +1,5 @@
 
 
-data "aws_region" "current" {
-  depends_on = [module.eks]
-}
 
 data "aws_eks_cluster" "eks_cluster" {
   name = module.eks.eks_cluster_name
