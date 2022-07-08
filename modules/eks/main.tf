@@ -201,10 +201,6 @@ resource "aws_eks_fargate_profile" "eks_fargate_system" {
   selector {
     namespace = "default"
   }
-  selector {
-    namespace = "aws-observability"
-  }
-
   timeouts {
     create   = "30m"
     delete   = "30m"
