@@ -13,25 +13,6 @@ locals {
       log_stream_prefix ${local.cwlog_stream_prefix}
       auto_create_group true
     EOF
-    filters_conf = <<-EOF
-    [FILTER]
-      Name parser
-      Match *
-      Key_Name log
-      Parser regex
-      Preserve_Key True
-      Reserve_Data True
-    EOF
-    parsers_conf = <<-EOF
-    [PARSER]
-      Name regex
-      Format regex
-      Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-      Time_Key time
-      Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-      Time_Keep On
-      Decode_Field_As json message
-    EOF
   }
 
   config = merge(

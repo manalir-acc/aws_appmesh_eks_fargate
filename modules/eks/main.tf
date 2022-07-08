@@ -140,7 +140,7 @@ Creating IAM Role for Fargate profile
 ==========================================*/
 
 resource "aws_iam_role" "eks_fargate_app_role" {
-  name = "${var.cluster_name}-fargate_cluster_role"
+  name = "${var.cluster_name}-fargate_cluster_app_role"
   description = "Allow fargate cluster to allocate resources for running pods"
   force_detach_policies = true
   assume_role_policy = <<POLICY
