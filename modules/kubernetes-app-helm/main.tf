@@ -68,7 +68,7 @@ resource "helm_release" "nginx_release" {
   chart      = local.nginx_chart_name
   version    = local.nginx_chart_version
   namespace  = var.app_namespace
-  create_namespace = false
+  create_namespace = true
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true
