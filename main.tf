@@ -84,7 +84,7 @@ module "aws_appmesh_controller" {
 
 module "kubernetes_app" {
     source                      =  "./modules/kubernetes-app"
-    app_namespace               =  var.fargate_app_namespace[0]
+    app_namespace               =  "kube-system" #var.fargate_app_namespace[0]
 
   depends_on = [module.eks, module.aws_alb_controller]
 }
