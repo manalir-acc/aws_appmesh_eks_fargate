@@ -32,7 +32,53 @@ locals {
   game_app_full_chart_version = var.game_app_full_chart_version
   game_app_full_release_name = "game-app-full-rel"
 
+  nginx_chart_name    = "nginx-server"
+  nginx_chart_version = "0.1.0"
+  nginx_release_name = "nginx-server-rel"
+
 }
+
+
+
+##### Deploying full application with Kubernetes Manifests (Deployment, Service, Ingress) ################
+
+/*
+resource "helm_release" "game_app_full" {
+
+  name       = local.game_app_full_release_name
+  repository = local.application_helm_repo
+  chart      = local.game_app_full_chart_name
+  version    = local.game_app_full_chart_version
+  namespace  = var.app_namespace
+  create_namespace = true
+  atomic     = true
+  timeout    = 900
+  cleanup_on_fail = true
+
+   values = [
+        file("${path.module}/helm-values-game-app-full.yaml")
+  ]
+
+}
+*/
+
+resource "helm_release" "nginx_release" {
+  name       = local.nginx_release_name
+  repository = local.application_helm_repo
+  chart      = local.nginx_chart_name
+  version    = local.nginx_chart_version
+  namespace  = var.app_namespace
+  create_namespace = false
+  atomic     = true
+  timeout    = 900
+  cleanup_on_fail = true
+
+   values = [
+        file("${path.module}/helm-values-nginx-server.yaml")
+  ]
+
+}
+
 
 
 ##### Deploying application with Kubernetes Manifests (Deployment, Service). NO Ingress will be deployed ################
@@ -107,41 +153,6 @@ locals {
 #
 
 
-
-##### Deploying full application with Kubernetes Manifests (Deployment, Service, Ingress) ################
-
-resource "helm_release" "game_app_full" {
-
-  name       = local.game_app_full_release_name
-  repository = local.application_helm_repo
-  chart      = local.game_app_full_chart_name
-  version    = local.game_app_full_chart_version
-  namespace  = var.app_namespace
-  create_namespace = true
-  atomic     = true
-  timeout    = 900
-  cleanup_on_fail = true
-
-   values = [
-        file("${path.module}/helm-values-game-app-full.yaml")
-  ]
-
-}
-
-
-resource "helm_release" "nginx_release" {
-  name       = "nginx-release"
-  repository = local.application_helm_repo
-  chart      = "nginx-server"
-  version    = "0.1.0"
-  namespace  = "kube-system"
-  create_namespace = false
-  atomic     = true
-  timeout    = 900
-  cleanup_on_fail = true
-
-
-}
 
 
 
