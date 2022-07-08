@@ -11,10 +11,6 @@ data "aws_eks_cluster_auth" "aws_iam_authenticator" {
   depends_on = [module.eks]
 }
 
-data "aws_eks_cluster" "eks_cluster_id" {
-  name = data.aws_eks_cluster.eks_cluster.id
-  depends_on = [module.eks]
-}
 
 data "aws_partition" "current" {}
 
