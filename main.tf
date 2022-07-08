@@ -73,6 +73,14 @@ module "aws_appmesh_controller" {
 }
 
 
+module "fargate_fluentbit" {
+  source        = "./modules/fargate-fluentbit"
+  addon_config  = var.fargate_fluentbit_addon_config
+  addon_context = local.addon_context
+
+  depends_on =  [module.eks, module.coredns_patching]
+}
+
 
 module "kubernetes_app" {
     source                      =  "./modules/kubernetes-app"

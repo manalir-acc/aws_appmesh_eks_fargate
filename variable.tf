@@ -37,6 +37,17 @@ variable "github_runner_base_path" {
   default = "/home/runner/"
 }
 
+variable "fargate_fluentbit_addon_config" {
+  type        = any
+  description = "Fargate fluentbit add-on config"
+  default     = {}
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
+}
 
 /*
 variable "s3_bucket_name" {

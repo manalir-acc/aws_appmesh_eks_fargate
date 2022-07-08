@@ -168,9 +168,9 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
 
 #==========================================================================================================================
 
-/* =======================================
-Creating Fargate Profile for CoreDNS
-==========================================*/
+/* ====================================================================
+Creating Fargate Profile for EKS System Components (e.g. CoreDNS)
+=======================================================================*/
 
 resource "aws_eks_fargate_profile" "eks_fargate_system" {
   cluster_name           = aws_eks_cluster.eks_cluster.name
@@ -184,15 +184,19 @@ resource "aws_eks_fargate_profile" "eks_fargate_system" {
   selector {
     namespace = "default"
   }
+  selector {
+    namespace = "aws-observability"
+  }
+
   timeouts {
     create   = "30m"
     delete   = "30m"
   }
 }
 
-/* ===========================================
-Creating IAM Role for Fargate profile CoreDNS
-==============================================*/
+/* ==================================================================
+Creating Fargate Profile for EKS System Components (e.g. CoreDNS)
+========================================================================*/
 
 resource "aws_iam_role" "eks_fargate_system_role" {
   name = substr("${var.cluster_name}-eks_fargate_system_role",0,64)

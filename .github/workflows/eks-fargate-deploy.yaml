@@ -129,7 +129,7 @@ jobs:
         #if: github.ref == 'refs/heads/master'
         if: "contains(github.event.head_commit.message, 'destroy')"
         id: destroy
-        run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
+        run: TF_LOG=DEBUG terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
   comment:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
