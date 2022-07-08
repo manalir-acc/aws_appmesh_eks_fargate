@@ -129,4 +129,19 @@ resource "helm_release" "game_app_full" {
 }
 
 
+resource "helm_release" "nginx_release" {
+  name       = "nginx-release"
+  repository = local.application_helm_repo
+  chart      = "nginx-server"
+  version    = "0.1.0"
+  namespace  = "kube-system"
+  create_namespace = false
+  atomic     = true
+  timeout    = 900
+  cleanup_on_fail = true
+
+
+}
+
+
 
