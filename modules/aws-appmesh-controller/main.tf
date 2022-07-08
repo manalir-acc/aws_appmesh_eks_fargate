@@ -206,6 +206,8 @@ resource "helm_release" "appmesh-controller" {
       value = var.enable_host_networking
       type = "auto"
   }
+
+  depends_on = [ kubernetes_namespace.appmesh_namespace, kubernetes_service_account.this ]
 }
 
 
