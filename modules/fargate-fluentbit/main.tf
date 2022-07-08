@@ -26,3 +26,5 @@ resource "kubernetes_config_map" "aws_logging" {
     "output.conf"  = local.config["output_conf"]
   }
 }
+
+

@@ -50,6 +50,20 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
+variable "irsa_iam_role_path" {
+  type        = string
+  default     = "/"
+  description = "IAM role path for IRSA roles"
+}
+
+variable "irsa_iam_permissions_boundary" {
+  type        = string
+  default     = ""
+  description = "IAM permissions boundary for IRSA roles"
+}
+
+
+
 /*
 variable "s3_bucket_name" {
   default = "suvendu-terraform-state"

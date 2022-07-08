@@ -30,7 +30,13 @@ module "eks" {
     depends_on = [module.vpc]
 }
 
+module "fargate_fluentbit" {
+  source        = "./modules/fargate-fluentbit"
+  addon_config  = var.fargate_fluentbit_addon_config
+  addon_context = local.addon_context
 
+  depends_on =  [module.eks ]
+}
 
 module "coredns_patching" {
   source  = "./modules/coredns-patch"
@@ -40,7 +46,7 @@ module "coredns_patching" {
   k8s_cluster_name = module.eks.eks_cluster_name
   user_profile =   var.user_profile
   user_os = var.user_os
-  depends_on = [module.eks]
+  depends_on = [module.eks, module.fargate_fluentbit]
 
 }
 
@@ -73,13 +79,7 @@ module "aws_appmesh_controller" {
 }
 
 
-module "fargate_fluentbit" {
-  source        = "./modules/fargate-fluentbit"
-  addon_config  = var.fargate_fluentbit_addon_config
-  addon_context = local.addon_context
 
-  depends_on =  [module.eks, module.coredns_patching]
-}
 
 
 module "kubernetes_app" {
