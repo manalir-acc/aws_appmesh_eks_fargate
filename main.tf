@@ -44,7 +44,7 @@ module "coredns_patching" {
 
 }
 
-
+/*
 module "aws_alb_controller" {
   source  = "./modules/aws-lb-controller"
   k8s_cluster_type = var.cluster_type
@@ -71,7 +71,7 @@ module "aws_appmesh_controller" {
   k8s_cluster_name = module.eks.eks_cluster_name
   depends_on =  [module.eks, module.coredns_patching]  
 }
-
+*/
 
 module "fargate_fluentbit" {
   source        = "./modules/fargate-fluentbit"
@@ -81,7 +81,7 @@ module "fargate_fluentbit" {
   depends_on =  [module.eks, module.coredns_patching]
 }
 
-
+/*
 module "kubernetes_app" {
     source                      =  "./modules/kubernetes-app"
     app_namespace               =  var.fargate_app_namespace[0]
@@ -89,7 +89,7 @@ module "kubernetes_app" {
   depends_on = [module.eks, module.aws_alb_controller]
 }
 
-
+*/
 
 
 
