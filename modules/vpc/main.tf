@@ -9,7 +9,7 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name        = "${var.vpc_name}-${var.environment}-vpc"
+    Name        = substr("${var.vpc_name}-${var.cluster_name}-${var.environment}-vpc",0,64)
     "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "shared"  # Refer: https://aws.amazon.com/premiumsupport/knowledge-center/eks-vpc-subnet-discovery/
     Environment = var.environment
     Group = var.cluster_group
