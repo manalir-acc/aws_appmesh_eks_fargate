@@ -3,10 +3,6 @@ variable "cluster_name" {}
 variable "cluster_type" {
   default = "eks"
 }
-variable "eks_cluster_id" {
-  description = "EKS Cluster Id"
-  type        = string
-}
 
 variable "cluster_group" {}
 variable "vpc_cidr" {}
