@@ -80,7 +80,7 @@ module "aws_appmesh_controller" {
 
 
 
-
+/*
 
 module "kubernetes_app" {
     source                      =  "./modules/kubernetes-app"
@@ -89,7 +89,7 @@ module "kubernetes_app" {
   depends_on = [module.eks, module.aws_alb_controller]
 }
 
-
+*/
 
 module "kubernetes_app_helm" {
     source                      =  "./modules/kubernetes-app-helm"
