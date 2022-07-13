@@ -235,7 +235,7 @@ resource "helm_release" "external_secrets" {
 # Creating Kubernetes SecretStore in the cluster so that Secrets can synchronise from AWS Secrets Manager
 # Once Secrets are synchronised Pods can use the secrets within the cluster
 
-
+/*
 resource "kubectl_manifest" "kubernetes-secret-store" {
     yaml_body = <<YAML
 apiVersion: external-secrets.io/v1beta1
@@ -255,7 +255,9 @@ spec:
 YAML
 }
 
-/*
+*/
+
+
 resource "kubernetes_manifest" "kubernetes-secret-store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
@@ -281,12 +283,12 @@ resource "kubernetes_manifest" "kubernetes-secret-store" {
       }
   }
 }
-*/
+ 
  
 # We will now create our ExternalSecret resource, specifying the secret we want to access and referencing the previously created SecretStore object. 
 # We will specify the existing AWS Secrets Manager secret name and keys.
 
-
+/*
 resource "kubectl_manifest" "kubernetes-external-secret" {
     yaml_body = <<YAML
 apiVersion: external-secrets.io/v1beta1
@@ -315,10 +317,10 @@ YAML
 }
 
 
+*/
 
 
-
-/*
+ 
 resource "kubernetes_manifest" "kubernetes-external-secret" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
@@ -337,8 +339,8 @@ resource "kubernetes_manifest" "kubernetes-external-secret" {
             name = "application-credentials"
             creationPolicy = "Owner"
           }
-          data = {
-            - secretKey =  "application-username"
+          data = [{
+              secretKey =  "application-username"
               remoteRef = {
                 key = "test/application/credentials" #AWS Secrets Manager secret name
                 property =  "app_username" #AWS Secrets Manager secret key
@@ -348,8 +350,8 @@ resource "kubernetes_manifest" "kubernetes-external-secret" {
                 key = "test/application/credentials" #AWS Secrets Manager secret name
                 property = "app_password" #AWS Secrets Manager secret key
               }
-          }
+          }]
         }
   }
 }
-*/
+ 
