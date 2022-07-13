@@ -51,3 +51,8 @@ variable "service_account_name" {
   default     = "external-secrets"
 }
 
+variable "app_namespace" {
+   description      =   "Kubernetes namespace name in which the business application is deployed "
+   type = string
+   default = null
+}
