@@ -12,7 +12,7 @@ locals {
 }
 
 
-
+/*
 resource "kubernetes_namespace" "external_secrets" {
   metadata {
     labels = {
@@ -24,7 +24,7 @@ resource "kubernetes_namespace" "external_secrets" {
     name = var.k8s_namespace
   }
 }
-
+*/
 
 
 # Deploying External Secrets Operator / Controller using Helm 
@@ -35,7 +35,7 @@ resource "helm_release" "external_secrets" {
   chart      = local.external_secrets_chart_name
   version    = local.external_secrets_chart_version
   namespace  = var.k8s_namespace
-  create_namespace = false
+  create_namespace = true
   atomic     = true
   timeout    = 900
   cleanup_on_fail = true
@@ -232,7 +232,10 @@ YAML
 
 */
 
+# https://github.com/hashicorp/terraform-provider-kubernetes-alpha/issues/199#issuecomment-832614387
 
+
+/*
 resource "kubernetes_manifest" "kubernetes-secret-store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
@@ -258,7 +261,7 @@ resource "kubernetes_manifest" "kubernetes-secret-store" {
       }
   }
 }
- 
+ */
  
 # We will now create our ExternalSecret resource, specifying the secret we want to access and referencing the previously created SecretStore object. 
 # We will specify the existing AWS Secrets Manager secret name and keys.
@@ -294,7 +297,7 @@ YAML
 
 */
 
-
+/*
  
 resource "kubernetes_manifest" "kubernetes-external-secret" {
   manifest = {
@@ -330,3 +333,4 @@ resource "kubernetes_manifest" "kubernetes-external-secret" {
   }
 }
  
+*/
