@@ -3,10 +3,11 @@
 # Reference: https://aws.amazon.com/blogs/containers/leverage-aws-secrets-stores-from-eks-fargate-with-external-secrets-operator/
 
 locals {
-  external_secrets_helm_repo     = "https://charts.external-secrets.io"
+  external_secrets_helm_repo     = "https://charts.external-secrets.io/external-secrets"
   external_secrets_chart_name    = "external-secrets"
   aws_vpc_id                   = data.aws_vpc.selected.id
   aws_region_name              = data.aws_region.current.name
+  external_secrets_chart_version = "0.5.8"
   service_account_name         = substr("${var.k8s_cluster_name}-external-secrets",0,64)
 }
 
@@ -174,7 +175,7 @@ resource "helm_release" "external_secrets" {
   name       = "external_secrets"
   repository = local.external_secrets_helm_repo
   chart      = local.external_secrets_chart_name
-  #version    = local.alb_controller_chart_version
+  version    = local.external_secrets_chart_version
   namespace  = var.k8s_namespace
   create_namespace = false
   atomic     = true
