@@ -55,7 +55,7 @@ resource "helm_release" "external_secrets" {
 
 
 
-
+/*
 resource "kubernetes_namespace" "application_namespace" {
   metadata {
     labels = {
@@ -66,7 +66,7 @@ resource "kubernetes_namespace" "application_namespace" {
     name = var.app_namespace #var.k8s_namespace
   }
 }
-
+*/
 
 
 resource "aws_iam_role" "this" {
