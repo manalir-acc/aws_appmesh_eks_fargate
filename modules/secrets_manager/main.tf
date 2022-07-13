@@ -56,6 +56,18 @@ resource "helm_release" "external_secrets" {
 
 
 
+resource "kubernetes_namespace" "application_namespace" {
+  metadata {
+    labels = {
+      "app.kubernetes.io/name"       = "application_namespace"
+      "app.kubernetes.io/component"  = "secret_store"
+      "app.kubernetes.io/managed-by" = "terraform" # "helm" #
+    }
+    name = var.app_namespace #var.k8s_namespace
+  }
+}
+
+
 
 resource "aws_iam_role" "this" {
   name        = local.service_account_name
@@ -235,7 +247,7 @@ YAML
 # https://github.com/hashicorp/terraform-provider-kubernetes-alpha/issues/199#issuecomment-832614387
 
 
-/*
+ 
 resource "kubernetes_manifest" "kubernetes-secret-store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
@@ -261,7 +273,7 @@ resource "kubernetes_manifest" "kubernetes-secret-store" {
       }
   }
 }
- */
+ 
  
 # We will now create our ExternalSecret resource, specifying the secret we want to access and referencing the previously created SecretStore object. 
 # We will specify the existing AWS Secrets Manager secret name and keys.
@@ -297,7 +309,7 @@ YAML
 
 */
 
-/*
+ 
  
 resource "kubernetes_manifest" "kubernetes-external-secret" {
   manifest = {
@@ -333,4 +345,4 @@ resource "kubernetes_manifest" "kubernetes-external-secret" {
   }
 }
  
-*/
+ 
