@@ -59,8 +59,6 @@ resource "helm_release" "external_secrets" {
 
 
 
-
-
 resource "aws_iam_role" "this" {
   name        = local.service_account_name
   description = "Permissions required by the Kubernetes External Secrets to do its job."
