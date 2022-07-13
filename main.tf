@@ -79,6 +79,12 @@ module "aws_appmesh_controller" {
   depends_on =  [module.eks, module.coredns_patching]  
 }
 
+module "secrets_manager" {
+  source  = "./modules/secrets_manager"
+  k8s_namespace    = "external-secrets"
+  k8s_cluster_name = module.eks.eks_cluster_name
+  depends_on =  [module.eks, module.coredns_patching]  
+}
 
 
 /*
