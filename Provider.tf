@@ -26,12 +26,6 @@ terraform {
   #  region = var.region_name
     encrypt= true
   }
-  required_providers {
-    kubectl = {
-      source = "gavinbunney/kubectl"
-      version = "1.14.0"
-    }
-  }
 }
 
 
