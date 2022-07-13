@@ -286,16 +286,16 @@ resource "kubernetes_manifest" "kubernetes-external-secret" {
             creationPolicy = "Owner"
           }
           data = {
-          - secretKey =  "application-username"
-            remoteRef = {
-              key = "test/application/credentials" #AWS Secrets Manager secret name
-              property =  "app_username" #AWS Secrets Manager secret key
-            }
-          - secretKey = "application-password"
-            remoteRef = {
-              key = "test/application/credentials" #AWS Secrets Manager secret name
-              property = "app_password" #AWS Secrets Manager secret key
-            }
+            - secretKey =  "application-username"
+              remoteRef = {
+                key = "test/application/credentials" #AWS Secrets Manager secret name
+                property =  "app_username" #AWS Secrets Manager secret key
+              }
+            - secretKey = "application-password"
+              remoteRef = {
+                key = "test/application/credentials" #AWS Secrets Manager secret name
+                property = "app_password" #AWS Secrets Manager secret key
+              }
           }
         }
   }
