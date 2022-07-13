@@ -172,7 +172,7 @@ resource "kubernetes_cluster_role_binding" "this" {
 
 resource "helm_release" "external_secrets" {
 
-  name       = "external_secrets"
+  name       = "external-secrets"
   repository = local.external_secrets_helm_repo
   chart      = local.external_secrets_chart_name
   version    = local.external_secrets_chart_version
