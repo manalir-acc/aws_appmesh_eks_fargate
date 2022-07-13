@@ -388,7 +388,8 @@ resource "aws_iam_role" "eks_fargate_extsecrets_role" {
       "Principal": {
         "Service": [ 
            "eks.amazonaws.com",
-          "eks-fargate-pods.amazonaws.com"
+           "eks-fargate-pods.amazonaws.com",
+           "secretsmanager.amazonaws.com"
           ]
       },
       "Action": "sts:AssumeRole"
@@ -414,7 +415,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController4" {
   role       = aws_iam_role.eks_fargate_extsecrets_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy-fluentbit-3" {
+resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy-fluentbit-4" {
   policy_arn = aws_iam_policy.fluentbit_policy.arn
   role       = aws_iam_role.eks_fargate_extsecrets_role.name
 }
