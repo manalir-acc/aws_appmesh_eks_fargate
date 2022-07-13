@@ -26,6 +26,41 @@ resource "kubernetes_namespace" "external_secrets" {
 }
 
 
+
+# Deploying External Secrets Operator / Controller using Helm 
+resource "helm_release" "external_secrets" {
+
+  name       = "external-secrets"
+  repository = local.external_secrets_helm_repo
+  chart      = local.external_secrets_chart_name
+  version    = local.external_secrets_chart_version
+  namespace  = var.k8s_namespace
+  create_namespace = false
+  atomic     = true
+  timeout    = 900
+  cleanup_on_fail = true
+  set {
+      name = "installCRDs"
+      value = "true"
+      type = "auto"
+  }
+  set {
+      name = "webhook.port"
+      value = "9443"
+      type = "auto"
+  } 
+  
+  depends_on = [ kubernetes_namespace.external_secrets ]
+}
+
+
+
+
+
+
+
+
+
 resource "aws_iam_role" "this" {
   name        = local.service_account_name
   description = "Permissions required by the Kubernetes External Secrets to do its job."
@@ -74,7 +109,7 @@ resource "kubernetes_service_account" "this" {
   automount_service_account_token = true
   metadata {
     name      =  local.service_account_name
-    namespace = var.k8s_namespace
+    namespace = var.app_namespace #var.k8s_namespace
     annotations = {
       # This annotation is only used when running on EKS which can
       # use IAM roles for service accounts.
@@ -172,62 +207,6 @@ resource "kubernetes_cluster_role_binding" "this" {
   }
 }
 
-# Deploying External Secrets Operator / Controller using Helm 
-resource "helm_release" "external_secrets" {
-
-  name       = "external-secrets"
-  repository = local.external_secrets_helm_repo
-  chart      = local.external_secrets_chart_name
-  version    = local.external_secrets_chart_version
-  namespace  = var.k8s_namespace
-  create_namespace = false
-  atomic     = true
-  timeout    = 900
-  cleanup_on_fail = true
-
-  set {
-      name = "clusterName"
-      value = var.k8s_cluster_name
-      type = "string"
-  }
-  set {
-      name = "serviceAccount.create"
-      value = "false"
-      type = "auto"
-  }
-  set {
-      name = "serviceAccount.name"
-      value = kubernetes_service_account.this.metadata[0].name
-      type = "string"
-  }
-  set {
-      name = "installCRDs"
-      value = "true"
-      type = "auto"
-  }
-  set {
-      name = "webhook.port"
-      value = "9443"
-      type = "auto"
-  }
-  set {
-      name = "region"
-      value = local.aws_region_name
-      type = "string"
-  }
-  set {
-      name = "vpcId"
-      value = local.aws_vpc_id
-      type = "string"
-  }
-  set {
-      name =  "hostNetwork"
-      value = var.enable_host_networking
-      type = "auto"
-  }
-
-  depends_on = [ kubernetes_namespace.external_secrets, kubernetes_service_account.this ]
-}
 
 
 
