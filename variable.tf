@@ -22,7 +22,7 @@ variable "fargate_app_namespace" {
 variable "cluster_version" {}
 variable "region_name" {
   description = "AWS Region code"
-  default = "eu-west-3"
+  default = "eu-central-1"
 }
 variable "user_profile" {
   description = "AWS User profile to execute commands"

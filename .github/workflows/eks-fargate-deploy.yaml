@@ -40,7 +40,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_TOKEN }}
-          aws-region: eu-west-3
+          aws-region: eu-central-1
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
